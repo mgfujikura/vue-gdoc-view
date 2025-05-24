@@ -5,9 +5,9 @@ import GoogleDocumentView from './components/GoogleDocumentView.vue';
 <template>
   <div class="App">
     <GoogleDocumentView
-      src="https://docs.google.com/document/d/e/2PACX-1vRDSV3ebQfluGw6mxaokXZ1AIdSx0NLQh2oYtgbek2Wj9M6NIZoOO23IfUKgfQZ07vMDv6hkEvL1TQc/pub?embedded=true"
-      width="50vmin"
-      height="50vmin"
+      src="https://docs.google.com/document/d/e/2PACX-1vRdGpAes41j2Akcmuir1aCQv0yERaqucBSSSyj-TlljLfurQY7tBun56YtaADbRW54M72O_UfxqVhQj/pub?embedded=true"
+      width="400px"
+      height="600px"
       >まってます</GoogleDocumentView
     >
   </div>

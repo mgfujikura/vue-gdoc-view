@@ -22,7 +22,13 @@ const scale = computed(() => {
   }
   const wrapperWidth = toPx(props.width, frameWrapper.value.parentElement?.clientWidth);
   const scale = wrapperWidth / documentPx.value;
-  return `scale(${scale})`;
+  return scale;
+});
+const frameHeight = computed(() => {
+  if (!frameWrapper.value) {
+    return undefined;
+  }
+  return frameWrapper.value.clientHeight / scale.value;
 });
 
 const frameLoaded = ref(false);
@@ -50,10 +56,10 @@ const frameLoaded2 = () => {
       v-show="frameLoaded"
       frameborder="0"
       :width="documentPx"
-      height="100%"
+      :height="frameHeight"
       :src="src"
       :style="{
-        transform: scale,
+        transform: `scale(${scale})`,
       }"
       @load="frameLoaded2()"
     ></iframe>
@@ -61,7 +67,7 @@ const frameLoaded2 = () => {
 </template>
 <style scoped>
 iframe {
-  height: 100%;
+  /* height: 100%; */
   border: none;
   overflow-x: clip;
   transform-origin: 0 0;
