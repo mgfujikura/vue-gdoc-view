@@ -46,7 +46,11 @@ const onFrameLoad = () => {
   if (!iframe.value) {
     return;
   }
-  const body = iframe.value.contentDocument?.querySelector('body');
+  const doc = iframe.value.contentDocument;
+  if (!doc) {
+    return;
+  }
+  const body = doc.querySelector('body');
   if (body) {
     if (props.margin) {
       body.style.margin = props.margin.toString();
@@ -56,14 +60,23 @@ const onFrameLoad = () => {
     }
   }
   // リンクの処理変更
-  const anchors = iframe.value.contentDocument?.querySelectorAll('a[href]');
-  if (anchors) {
-    for (const elm of anchors) {
-      const a = elm as HTMLAnchorElement;
-      a.target = '_parent';
-      const url = new URL(a.href);
-      a.href = url.searchParams.get('q') || '';
-    }
+  const anchors = doc.querySelectorAll('a[href]');
+  for (const elm of anchors) {
+    const a = elm as HTMLAnchorElement;
+    a.target = '_parent';
+    const url = new URL(a.href);
+    a.href = url.searchParams.get('q') || '';
+  }
+  // 画像リンクは削除されているため、代替テキストをリンクにする
+  const images = doc.querySelectorAll('img[alt]');
+  for (const elm of images) {
+    const img = elm as HTMLImageElement;
+    const a = document.createElement('a');
+    a.href = img.alt;
+    img.alt = '';
+    a.target = '_parent';
+    a.appendChild(img.cloneNode(true));
+    img.parentElement?.replaceChild(a, img);
   }
 };
 </script>
