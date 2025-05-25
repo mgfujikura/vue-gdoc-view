@@ -7,6 +7,8 @@ const props = defineProps<{
   width: number | string;
   height: number | string;
   documentWidth?: number;
+  margin?: number | string;
+  padding?: number | string;
 }>();
 
 const width = computed(() => (typeof props.width === 'string' ? props.width : props.width + 'px'));
@@ -15,6 +17,7 @@ const height = computed(() => (typeof props.height === 'string' ? props.height :
 const documentPx = computed(() => props.documentWidth || 601.867);
 
 const frameWrapper = useTemplateRef('frameWrapper');
+const iframe = useTemplateRef('iframe');
 
 const scale = computed(() => {
   if (!frameWrapper.value) {
@@ -25,7 +28,7 @@ const scale = computed(() => {
   return scale;
 });
 const frameHeight = computed(() => {
-  if (!frameWrapper.value) {
+  if (!frameWrapper.value || !scale.value) {
     return undefined;
   }
   return frameWrapper.value.clientHeight / scale.value;
@@ -38,8 +41,30 @@ onMounted(() => {
   mounted.value = true;
 });
 
-const frameLoaded2 = () => {
+const onFrameLoad = () => {
   frameLoaded.value = mounted.value;
+  if (!iframe.value) {
+    return;
+  }
+  const body = iframe.value.contentDocument?.querySelector('body');
+  if (body) {
+    if (props.margin) {
+      body.style.margin = props.margin.toString();
+    }
+    if (props.padding) {
+      body.style.padding = props.padding.toString();
+    }
+  }
+  // リンクの処理変更
+  const anchors = iframe.value.contentDocument?.querySelectorAll('a[href]');
+  if (anchors) {
+    for (const elm of anchors) {
+      const a = elm as HTMLAnchorElement;
+      a.target = '_parent';
+      const url = new URL(a.href);
+      a.href = url.searchParams.get('q') || '';
+    }
+  }
 };
 </script>
 <template>
@@ -53,6 +78,7 @@ const frameLoaded2 = () => {
   >
     <slot v-if="!frameLoaded"></slot>
     <iframe
+      ref="iframe"
       v-show="frameLoaded"
       frameborder="0"
       :width="documentPx"
@@ -61,7 +87,7 @@ const frameLoaded2 = () => {
       :style="{
         transform: `scale(${scale})`,
       }"
-      @load="frameLoaded2()"
+      @load="onFrameLoad()"
     ></iframe>
   </div>
 </template>
