@@ -10,6 +10,9 @@ const props = defineProps<{
   margin?: number | string;
   padding?: number | string;
 }>();
+const emits = defineEmits<{
+  loaded: [doc: Document];
+}>();
 
 const width = computed(() => (typeof props.width === 'string' ? props.width : props.width + 'px'));
 const height = computed(() => (typeof props.height === 'string' ? props.height : props.height + 'px'));
@@ -78,6 +81,8 @@ const onFrameLoad = () => {
     a.appendChild(img.cloneNode(true));
     img.parentElement?.replaceChild(a, img);
   }
+  // onLoadイベント
+  emits('loaded', doc);
 };
 </script>
 <template>
