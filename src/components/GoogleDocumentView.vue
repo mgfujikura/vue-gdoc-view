@@ -70,13 +70,23 @@ const onFrameLoad = () => {
     const url = new URL(a.href);
     a.href = url.searchParams.get('q') || '';
   }
-  // 画像リンクは削除されているため、代替テキストをリンクにする
+  // 画像の alt が link: で始まっている場合は link: 以降スペースまたは最後までの文字列を
+  // 画像リンクURLとして設定する。
+  // ※ Googleドキュメントで画像リンクをつけてもHTML化時にリンクが削除されてしまうため
   const images = doc.querySelectorAll('img[alt]');
   for (const elm of images) {
     const img = elm as HTMLImageElement;
+    if (!img.alt.startsWith('link:')) {
+      continue;
+    }
+    const [url, alt] = img.alt.substring(5).split(' ', 2);
     const a = document.createElement('a');
-    a.href = img.alt;
-    img.alt = '';
+    a.href = url;
+    if (alt) {
+      img.alt = alt;
+    } else {
+      img.removeAttribute('alt');
+    }
     a.target = '_parent';
     a.appendChild(img.cloneNode(true));
     img.parentElement?.replaceChild(a, img);
