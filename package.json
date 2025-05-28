@@ -1,6 +1,6 @@
 {
   "name": "@mgfujikura/google-document-view",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": false,
   "type": "module",
   "types": "./dist/lib.d.ts",
