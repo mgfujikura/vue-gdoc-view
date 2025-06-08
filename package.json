@@ -7,11 +7,10 @@
   "files": [
     "dist"
   ],
-  "module": "./dist/google-document-view.js",
   "exports": {
     ".": {
-      "import": "./dist/google-document-view",
-      "require": "./dist/google-document-view"
+      "types": "./dist/lib.d.ts",
+      "import": "./dist/google-document-view"
     },
     "./css": "./dist/style.css"
   },
