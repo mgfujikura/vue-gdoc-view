@@ -19,22 +19,22 @@ const height = computed(() => (typeof props.height === 'string' ? props.height :
 
 const documentPx = computed(() => props.documentWidth || 601.867);
 
-const frameWrapper = useTemplateRef('frameWrapper');
-const iframe = useTemplateRef('iframe');
+const frameWrapperRef = useTemplateRef('frameWrapper');
+const iframeRef = useTemplateRef('iframe');
 
 const scale = computed(() => {
-  if (!frameWrapper.value) {
+  if (!frameWrapperRef.value) {
     return undefined;
   }
-  const wrapperWidth = toPx(props.width, frameWrapper.value.parentElement?.clientWidth);
+  const wrapperWidth = toPx(props.width, frameWrapperRef.value.parentElement?.clientWidth);
   const scale = wrapperWidth / documentPx.value;
   return scale;
 });
 const frameHeight = computed(() => {
-  if (!frameWrapper.value || !scale.value) {
+  if (!frameWrapperRef.value || !scale.value) {
     return undefined;
   }
-  return frameWrapper.value.clientHeight / scale.value;
+  return frameWrapperRef.value.clientHeight / scale.value;
 });
 
 const frameLoaded = ref(false);
@@ -46,10 +46,10 @@ onMounted(() => {
 
 const onFrameLoad = () => {
   frameLoaded.value = mounted.value;
-  if (!iframe.value) {
+  if (!iframeRef.value) {
     return;
   }
-  const doc = iframe.value.contentDocument;
+  const doc = iframeRef.value.contentDocument;
   if (!doc) {
     return;
   }
